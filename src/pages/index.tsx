@@ -2,9 +2,35 @@ import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import styles from '~/styles/Home.module.css';
 
+// MEMO: ToDoのデータを表す構造(型)
+type Todo = {
+  id: string;
+  task: string;
+  isDone: boolean;
+};
+
 const Home: NextPage = () => {
   // MEMO: 入力したタスクの値を保存するState
   const [task, setTask] = useState<string>('');
+
+  // MEMO: 現在のToDoリストの配列データ
+  const todos: Todo[] = [
+    {
+      id: 'task1',
+      task: '会議',
+      isDone: false,
+    },
+    {
+      id: 'task2',
+      task: 'メール',
+      isDone: false,
+    },
+    {
+      id: 'task3',
+      task: '読書',
+      isDone: false,
+    },
+  ];
 
   // MEMO: タスク入力欄が変更された場合の処理
   const handleTaskChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,27 +75,27 @@ const Home: NextPage = () => {
               <button className={styles.statusButton}>完了</button>
             </div>
             <ul className={styles.todoList}>
-              <li className={styles.todoListItem}>
-                <label className={styles.checkbox}>
-                  <input type="checkbox" name="todo" id="todo_1" value="1" className={styles.todoCheckbox} />
-                  会議
-                </label>
-              </li>
-              <li className={styles.todoListItem}>
-                <label className={styles.checkbox}>
-                  <input type="checkbox" name="todo" id="todo_2" value="2" className={styles.todoCheckbox} />
-                  メール
-                </label>
-              </li>
-              <li className={styles.todoListItem}>
-                <label className={styles.checkbox}>
-                  <input type="checkbox" name="todo" id="todo_3" value="3" className={styles.todoCheckbox} />
-                  読書
-                </label>
-              </li>
+              {/* todos配列からhtmlの配列を生成する */}
+              {todos.map((todo, index) => {
+                return (
+                  <li className={styles.todoListItem} key={todo.id}>
+                    <label className={styles.checkbox}>
+                      <input
+                        type="checkbox"
+                        name="todo"
+                        id={todo.id}
+                        value={index}
+                        className={styles.todoCheckbox}
+                        checked={todo.isDone}
+                      />
+                      {todo.task}
+                    </label>
+                  </li>
+                );
+              })}
             </ul>
             <div className={styles.todoFooter}>
-              <div className={styles.todoDetail}>3 todos</div>
+              <div className={styles.todoDetail}>{todos.length} todos</div>
             </div>
           </div>
         </div>
