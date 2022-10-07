@@ -1,0 +1,55 @@
+version: "3"
+services:
+  node:
+    build:
+      context: ../..
+      dockerfile: ./.docker/images/node/Dockerfile
+    tty: true
+    volumes:
+      - ../..:/usr/src/app
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    networks:
+      - tq-net
+  
+  mysql:
+    build:
+      context: ../..
+      dockerfile: ./.docker/images/mysql/Dockerfile
+    # M1マック向けのplatform設定
+    platform: linux/x86_64
+    volumes:
+      - mysql:/var/lib/mysql
+    env_file:
+      - .env
+    ports:
+      - 3306:3306
+    networks:
+      - tq-net
+  
+  # 開発用
+  phpmyadmin:
+    image: phpmyadmin:latest
+    env_file:
+      - .env
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: ${MYSQL_HOST}
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - '8080:80'
+    networks:
+      - tq-net
+    depends_on:
+      - mysql
+
+volumes:
+  mysql:
+    driver: local
+
+networks:
+  tq-net:
+    driver: bridge
