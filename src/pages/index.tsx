@@ -13,8 +13,8 @@ const Home: NextPage = () => {
   // MEMO: 入力したタスクの値を保存するState
   const [task, setTask] = useState<string>('');
 
-  // MEMO: 現在のToDoリストの配列データ
-  const todos: Todo[] = [
+  // MEMO: 現在のToDoリストの配列データを保存するState
+  const [todos, setTodos] = useState<Todo[]>([
     {
       id: 'task1',
       task: '会議',
@@ -30,12 +30,28 @@ const Home: NextPage = () => {
       task: '読書',
       isDone: false,
     },
-  ];
+  ]);
 
   // MEMO: タスク入力欄が変更された場合の処理
   const handleTaskChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // MEMO: タスクの値をStateに保存する
     setTask(e.target.value);
+  };
+
+  // MEMO: ToDo のチェックボックスが修正された場合の処理
+  const handleTodoCheck = (checkedTodo: Todo) => {
+    // MEMO: チェックしたタスクのステータスを変更した、新しいToDo配列を生成
+    const updatedTodos = todos.map((todo) => {
+      // MEMO: IDがチェックされたToDoのIDと一致した場合
+      if (todo.id === checkedTodo.id) {
+        // MEMO: チェックされたToDoデータを複製し、isDoneの値だけを更新して返却する
+        return { ...checkedTodo, isDone: !checkedTodo.isDone };
+      }
+      // MEMO: チェックされたToDoではない場合は何も変更せずに返却する
+      return todo;
+    });
+    // MEMO: 更新されたToDo配列データをStateに保存する
+    setTodos(updatedTodos);
   };
 
   // フォームを送信した場合(追加ボタンをクリックした場合)の処理
@@ -87,6 +103,7 @@ const Home: NextPage = () => {
                         value={index}
                         className={styles.todoCheckbox}
                         checked={todo.isDone}
+                        onChange={() => handleTodoCheck(todo)}
                       />
                       {todo.task}
                     </label>
