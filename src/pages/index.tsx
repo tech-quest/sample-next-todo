@@ -13,24 +13,8 @@ const Home: NextPage = () => {
   // MEMO: 入力したタスクの値を保存するState
   const [task, setTask] = useState<string>('');
 
-  // MEMO: 現在のToDoリストの配列データを保存するState
-  const [todos, setTodos] = useState<Todo[]>([
-    {
-      id: 'task1',
-      task: '会議',
-      isDone: false,
-    },
-    {
-      id: 'task2',
-      task: 'メール',
-      isDone: false,
-    },
-    {
-      id: 'task3',
-      task: '読書',
-      isDone: false,
-    },
-  ]);
+  // MEMO: 現在のToDoリストの配列データを保存するState (初期値: 空)
+  const [todos, setTodos] = useState<Todo[]>([]);
 
   // MEMO: タスク入力欄が変更された場合の処理
   const handleTaskChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,8 +42,16 @@ const Home: NextPage = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // MEMO: formタグのデフォルトの挙動 (送信処理) を無効化
     e.preventDefault();
-    // MEMO: タスクの値をアラート表示して確認
-    alert(task);
+    // MEMO: タスクを識別するためのIDを生成
+    const id = Math.random().toString(32).substring(2);
+    // MEMO: 新規タスクのtodoオブジェクトを作成
+    const newTodo: Todo = {
+      id,
+      task,
+      isDone: false,
+    };
+    // MEMO: 現在のtodos配列を複製し、新規todoを追加してStateに保存する
+    setTodos([...todos, newTodo]);
   };
 
   return (
