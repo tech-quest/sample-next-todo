@@ -78,6 +78,11 @@
 .statusButton:hover {
   background-color: #eceff1;
 }
+.currentStatusButton {
+  composes: statusButton;
+  background-color: #eceff1;
+  color: inherit;
+}
 
 .heading {
   font-size: 1.5em;

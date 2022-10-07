@@ -9,6 +9,9 @@ type Todo = {
   isDone: boolean;
 };
 
+// MEMO: ToDo の状態を表す文字列
+type TodoFilter = 'ALL' | 'NOT_DONE' | 'DONE';
+
 const Home: NextPage = () => {
   // MEMO: 入力したタスクの値を保存するState
   const [task, setTask] = useState<string>('');
@@ -16,10 +19,18 @@ const Home: NextPage = () => {
   // MEMO: 現在のToDoリストの配列データを保存するState (初期値: 空)
   const [todos, setTodos] = useState<Todo[]>([]);
 
+  // MEMO: 現在の表示ステータスを保存するState
+  const [todoFilter, setTodoFilter] = useState<TodoFilter>('ALL');
+
   // MEMO: タスク入力欄が変更された場合の処理
   const handleTaskChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // MEMO: タスクの値をStateに保存する
     setTask(e.target.value);
+  };
+
+  // MEMO: ステータスをクリックした場合の処理
+  const handleStatusClick = (status: TodoFilter) => {
+    setTodoFilter(status);
   };
 
   // MEMO: ToDo のチェックボックスが修正された場合の処理
@@ -80,13 +91,36 @@ const Home: NextPage = () => {
           </div>
           <div className="todo">
             <div className={styles.todoStatus}>
-              <button className={styles.statusButton}>すべて</button>
-              <button className={styles.statusButton}>未完了</button>
-              <button className={styles.statusButton}>完了</button>
+              <button
+                className={todoFilter === 'ALL' ? styles.currentStatusButton : styles.statusButton}
+                onClick={() => handleStatusClick('ALL')}
+              >
+                すべて
+              </button>
+              <button
+                className={todoFilter === 'NOT_DONE' ? styles.currentStatusButton : styles.statusButton}
+                onClick={() => handleStatusClick('NOT_DONE')}
+              >
+                未完了
+              </button>
+              <button
+                className={todoFilter === 'DONE' ? styles.currentStatusButton : styles.statusButton}
+                onClick={() => handleStatusClick('DONE')}
+              >
+                完了
+              </button>
             </div>
             <ul className={styles.todoList}>
               {/* todos配列からhtmlの配列を生成する */}
               {todos.map((todo, index) => {
+                // MEMO: 「完了」のステータスが選択されている場合、「未完了(isDone=false)」のToDoは出力しない
+                if (todoFilter === 'DONE' && !todo.isDone) {
+                  return null;
+                }
+                // MEMO: 「未完了」のステータスが選択されている場合、「完了(isDone=true)」のToDoは出力しない
+                if (todoFilter === 'NOT_DONE' && todo.isDone) {
+                  return null;
+                }
                 return (
                   <li className={styles.todoListItem} key={todo.id}>
                     <label className={styles.checkbox}>
