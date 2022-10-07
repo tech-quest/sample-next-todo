@@ -52,6 +52,8 @@ const Home: NextPage = () => {
     };
     // MEMO: 現在のtodos配列を複製し、新規todoを追加してStateに保存する
     setTodos([...todos, newTodo]);
+    // MEMO: タスク入力欄を空にする
+    setTask('');
   };
 
   return (
