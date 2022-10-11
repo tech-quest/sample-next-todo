@@ -1,0 +1,19 @@
+.form {
+  display: flex;
+}
+
+.input {
+  width: 100%;
+  padding: 1em;
+  border: none;
+  border-bottom: 1px solid grey;
+}
+
+.formButton {
+  padding: 1em 2em;
+  white-space: nowrap;
+  border: 1px solid grey;
+  border-radius: none;
+  background-color: #eceff1;
+  cursor: pointer;
+}

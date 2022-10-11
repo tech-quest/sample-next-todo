@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next';
+import { SimpleInputForm } from '~/components/SimpleInputForm';
 import styles from '~/styles/Home.module.css';
 
 // MEMO: ToDoのデータを表す構造(型)
@@ -13,20 +14,11 @@ type Todo = {
 type TodoFilter = 'ALL' | 'NOT_DONE' | 'DONE';
 
 const Home: NextPage = () => {
-  // MEMO: 入力したタスクの値を保存するState
-  const [task, setTask] = useState<string>('');
-
   // MEMO: 現在のToDoリストの配列データを保存するState (初期値: 空)
   const [todos, setTodos] = useState<Todo[]>([]);
 
   // MEMO: 現在の表示ステータスを保存するState
   const [todoFilter, setTodoFilter] = useState<TodoFilter>('ALL');
-
-  // MEMO: タスク入力欄が変更された場合の処理
-  const handleTaskChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // MEMO: タスクの値をStateに保存する
-    setTask(e.target.value);
-  };
 
   // MEMO: ステータスをクリックした場合の処理
   const handleStatusClick = (status: TodoFilter) => {
@@ -49,22 +41,18 @@ const Home: NextPage = () => {
     setTodos(updatedTodos);
   };
 
-  // フォームを送信した場合(追加ボタンをクリックした場合)の処理
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // MEMO: formタグのデフォルトの挙動 (送信処理) を無効化
-    e.preventDefault();
+  // MEMO: SimpleInputForm に渡す送信時の処理
+  const handleSubmit = (value: string) => {
     // MEMO: タスクを識別するためのIDを生成
     const id = Math.random().toString(32).substring(2);
     // MEMO: 新規タスクのtodoオブジェクトを作成
     const newTodo: Todo = {
       id,
-      task,
+      task: value,
       isDone: false,
     };
     // MEMO: 現在のtodos配列を複製し、新規todoを追加してStateに保存する
     setTodos([...todos, newTodo]);
-    // MEMO: タスク入力欄を空にする
-    setTask('');
   };
 
   return (
@@ -75,19 +63,7 @@ const Home: NextPage = () => {
         </div>
         <div className="panelBody">
           <div className={styles.inputField}>
-            <form noValidate className={styles.form} onSubmit={handleSubmit}>
-              <input
-                className={styles.input}
-                placeholder="タスクを入力してください"
-                type="text"
-                name="task"
-                value={task}
-                onChange={handleTaskChange}
-              />
-              <button type="submit" className={styles.formButton}>
-                追加
-              </button>
-            </form>
+            <SimpleInputForm onSubmit={handleSubmit} placeholder="タスクを入力してください" name="task" />
           </div>
           <div className="todo">
             <div className={styles.todoStatus}>
